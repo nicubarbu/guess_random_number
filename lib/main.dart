@@ -35,14 +35,14 @@ class _MyHomePageState extends State<MyHomePage> {
   String _elevatedButtonText = 'Guess';
   late int _randomNumber;
   late int userNumber;
-  late FocusNode focusNode;
+  late FocusNode _focusNode;
   bool gameEnded = false;
 
   @override
   void initState() {
     super.initState();
     _randomNumber = _generateRandomNumber(1, 100);
-    focusNode = FocusNode();
+    _focusNode = FocusNode();
   }
 
   int _generateRandomNumber(int min, int max) {
@@ -72,6 +72,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void dispose() {
     _textEditingController.dispose();
+    _focusNode.dispose();
     super.dispose();
   }
 
@@ -112,85 +113,80 @@ class _MyHomePageState extends State<MyHomePage> {
                   style: TextStyle(fontSize: 20),
                 ),
               ),
-              Container(
-                margin: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(32),
-                  border: Border.all(color: Colors.deepPurpleAccent),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: Column(
-                    children: <Widget>[
-                      const SizedBox(
-                        height: 16,
-                      ),
-                      Text(
-                        _try,
-                        style: const TextStyle(
-                          fontSize: 26,
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 16,
-                        width: 16,
-                      ),
-                      TextField(
-                        keyboardType: TextInputType.number,
-                        controller: _textEditingController,
-                        decoration: InputDecoration(
-                          hintText: _elevatedButtonText == 'Guess'
-                              ? 'Your number is: '
-                              : '',
-                          labelText: 'Number *',
-                        ),
-                      ),
-                      // TextFormField(
-                      //   controller: _textEditingController,
-                      //   validator: (String? value) {
-                      //     if (value == null || value.isEmpty) {
-                      //       const Text(
-                      //         'Please enter an integer!',
-                      //         style: TextStyle(color: Colors.redAccent),
-                      //       );
-                      //     }
-                      //     final RegExp intRegex = RegExp(r'^-?\d+$');
-                      //     if (!intRegex.hasMatch(value!)) {
-                      //       return 'Please return a valid integer!';
-                      //     }
-                      //
-                      //   },
-                      // ),
-                      const SizedBox(
-                        height: 16,
-                      ),
-                      ElevatedButton(
-                          onPressed: () {
-                            if (_elevatedButtonText == 'Reset') {
-                              _resetGame();
-                            }
-                            userNumber = int.parse(_textEditingController.text);
-                            if (higherLower(userNumber) == 'is equal') {
-                              _dialogBuilder(context);
-                            }
+              GestureDetector(
+                onTap: () {
+                  _focusNode.unfocus();
+                },
+                child: FocusScope(
+                  child: Container(
+                    margin:
+                        const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(32),
+                      border: Border.all(color: Colors.deepPurpleAccent),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: Column(
+                        children: <Widget>[
+                          const SizedBox(
+                            height: 16,
+                          ),
+                          Text(
+                            _try,
+                            style: const TextStyle(
+                              fontSize: 26,
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 16,
+                            width: 16,
+                          ),
+                          TextField(
+                            keyboardType: TextInputType.number,
+                            controller: _textEditingController,
+                            decoration: InputDecoration(
+                              hintText: _elevatedButtonText == 'Guess'
+                                  ? 'Your number is: '
+                                  : '',
+                              labelText: 'Number *',
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 16,
+                          ),
+                          ElevatedButton(
+                              onPressed: () {
+                                _focusNode.unfocus();
+                                if (_elevatedButtonText == 'Reset') {
+                                  _resetGame();
+                                }
+                                userNumber =
+                                    int.parse(_textEditingController.text);
+                                if (higherLower(userNumber) == 'is equal') {
+                                  _dialogBuilder(context);
+                                }
 
-                            setState(() {
-                              if (higherLower(userNumber) == 'is higher') {
-                                _try = 'You tried $userNumber\nTry lower!';
-                              }
-                              if (higherLower(userNumber) == 'is lower') {
-                                _try = 'You tried $userNumber\nTry higher!';
-                              }
-                            });
-                          },
-                          child: Text(_elevatedButtonText)),
-                      const SizedBox(
-                        height: 16,
+                                setState(() {
+                                  if (higherLower(userNumber) == 'is higher') {
+                                    _try = 'You tried $userNumber\nTry lower!';
+                                  } else if (higherLower(userNumber) ==
+                                      'is '
+                                          'lower') {
+                                    _try = 'You tried $userNumber\nTry higher!';
+                                  }
+                                });
+                              },
+                              child: Text(_elevatedButtonText)),
+                          const SizedBox(
+                            height: 16,
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
                 ),
-              )
+              ),
             ],
           ),
         ),
