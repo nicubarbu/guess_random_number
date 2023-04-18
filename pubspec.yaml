@@ -1,5 +1,5 @@
 name: guess_random_number
-description: Try to guess a random number
+description: Try to guess a random generated number
 publish_to: 'none'
 version: 1.0.0+1
 
