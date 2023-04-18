@@ -35,14 +35,19 @@ class _MyHomePageState extends State<MyHomePage> {
   String _elevatedButtonText = 'Guess';
   late int _randomNumber;
   late int userNumber;
-  late FocusNode _focusNode;
+  final FocusNode _focusNode = FocusNode();
   bool gameEnded = false;
 
   @override
   void initState() {
     super.initState();
     _randomNumber = _generateRandomNumber(1, 100);
-    _focusNode = FocusNode();
+
+    _focusNode.addListener(() {
+      if (!_focusNode.hasFocus) {
+        _textEditingController.selection = const TextSelection.collapsed(offset: 0);
+      }
+    });
   }
 
   int _generateRandomNumber(int min, int max) {
